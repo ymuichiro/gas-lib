@@ -27,6 +27,35 @@ export function createMD5HashKey(text: string): string {
   return hash_key;
 }
 
+class ArrayActions {
+  /**
+   * 指定されたIndexを１つ上に移動する
+   */
+  static swapUp<T>(array: T[], index: number): T[] {
+    if (index <= 0) {
+      return array;
+    } else {
+      array.splice(index - 1, 2, array[index], array[index - 1]);
+      return array;
+    }
+  }
+
+  /**
+   * 指定されたIndexを１つ下に移動する
+   */
+  static swapDown<T>(array: T[], index: number): T[] {
+    if (index < 0) {
+      return array;
+    } else if (array.length - 1 <= index) {
+      return array;
+    } else {
+      console.log(array.length);
+      array.splice(index, 2, array[index + 1], array[index]);
+      return array;
+    }
+  }
+}
+
 class TypeGuard {
   /**
    * 与えられた引数が undefined か否かを返す
