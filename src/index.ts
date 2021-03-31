@@ -15,6 +15,18 @@ function SpreadsheetLib(ss: GoogleAppsScript.Spreadsheet.Spreadsheet) {
   return { openSheet };
 }
 
+/**
+ * 入力された文字列をMD5形式でHash化する
+ * @param {string} text
+ * @returns {string} hash
+ */
+export function createMD5HashKey(text: string): string {
+  const md5_byte = Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, text, Utilities.Charset.UTF_8);
+  let hash_key = '';
+  md5_byte.forEach(byte => (hash_key += byte < 0 ? (byte += 256).toString(16) : byte.toString(16)));
+  return hash_key;
+}
+
 class TypeGuard {
   /**
    * 与えられた引数が undefined か否かを返す
