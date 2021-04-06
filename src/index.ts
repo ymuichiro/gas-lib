@@ -2,7 +2,7 @@
  * Spreadsheetを操作する
  * @param {GoogleAppsScript.Spreadsheet.Spreadsheet} ss
  */
-function SpreadsheetLib(ss: GoogleAppsScript.Spreadsheet.Spreadsheet) {
+export function SpreadsheetLib(ss: GoogleAppsScript.Spreadsheet.Spreadsheet) {
   function openSheet(sheetName: string) {
     const sheet = ss.getSheetByName(sheetName);
     if (TypeGuard.isNull(sheet)) {
@@ -13,6 +13,58 @@ function SpreadsheetLib(ss: GoogleAppsScript.Spreadsheet.Spreadsheet) {
 
   // SpreadsheetLib return
   return { openSheet };
+}
+
+/** 数値を3桁区切りの文字列に変換する */
+export const to3DigitNum = (num: number): string => {
+  if (num.toString() === 'NaN') return '0';
+  return Number(num).toLocaleString();
+};
+
+/** 指定された桁数でゼロパディングする */
+export const toZeroPadding = (v: string | number, digit: number): string => {
+  const _ = digit < 0 ? -digit : digit; // 絶対値
+  if (typeof v === 'number') {
+    return `${'0'.repeat(_)}${v.toString()}`.slice(-_);
+  } else {
+    return `${'0'.repeat(_)}${v}`.slice(-_);
+  }
+};
+
+/** 指定された文字列でパディングする */
+export const toWordPadding = (v: string | number, digit: number, word: string): string => {
+  const _ = digit < 0 ? -digit : digit; // 絶対値
+  if (typeof v === 'number') {
+    return `${word.repeat(_)}${v.toString()}`.slice(-_);
+  } else {
+    return `${word.repeat(_)}${v}`.slice(-_);
+  }
+};
+
+/** 与えられた値に対して連続的に処理を行う */
+export class Pipe<T> {
+  private v: T;
+
+  constructor(v: T) {
+    this.v = v;
+  }
+
+  /** 途中経過をログ出力する */
+  public log(): this {
+    console.log(this.v);
+    return this;
+  }
+
+  /** Pipe処理を継続する */
+  public to(fc: (v: T) => T): this {
+    this.v = fc(this.v);
+    return this;
+  }
+
+  /** Pipe処理を完了する */
+  public exit(): T {
+    return this.v;
+  }
 }
 
 /**
@@ -56,7 +108,7 @@ class ArrayActions {
   }
 }
 
-class TypeGuard {
+export class TypeGuard {
   /**
    * 与えられた引数が undefined か否かを返す
    * @param v 判定対象の値
